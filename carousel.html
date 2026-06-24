@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SESO Digital — GBP Carousel</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --blue:#0b54c9;        /* SESO royal blue */
+    --blue-deep:#073a8f;
+    --sky:#1f9bf0;         /* SESO light blue */
+    --orange:#f08a16;      /* SESO orange */
+    --ink:#16243b;
+    --slate:#5a6b85;
+    --canvas:#eef3fb;
+    --card:#ffffff;
+    --line:#e3eaf5;
+    /* google dots */
+    --g-blue:#4285F4; --g-red:#EA4335; --g-yellow:#FBBC05; --g-green:#34A853;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#cdd6e6;font-family:'Inter',sans-serif;}
+
+  .slide{
+    width:1080px;height:1350px;position:relative;overflow:hidden;
+    background:var(--canvas);
+    display:flex;flex-direction:column;
+  }
+  /* page break for printing each slide separately */
+  .slide{page-break-after:always;}
+
+  /* ---------- shared atmosphere ---------- */
+  .grain{position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 700px at 85% -10%, rgba(31,155,240,.10), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(11,84,201,.10), transparent 60%);
+  }
+  .pad{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;
+    padding:96px 90px 90px;}
+
+  /* ---------- top brand bar ---------- */
+  .brandbar{display:flex;align-items:center;justify-content:space-between;}
+  .brandbar img{height:62px;display:block;}
+  .badge{display:flex;align-items:center;gap:10px;
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:11px 20px 11px 16px;box-shadow:0 8px 20px rgba(16,42,82,.06);}
+  .gdots{display:flex;gap:5px;}
+  .gdots i{width:11px;height:11px;border-radius:50%;display:block;}
+  .badge span{font-family:'Plus Jakarta Sans';font-weight:700;font-size:20px;
+    color:var(--ink);letter-spacing:.2px;}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:12px;
+    font-family:'Plus Jakarta Sans';font-weight:700;font-size:22px;
+    letter-spacing:2.5px;text-transform:uppercase;color:var(--blue);}
+  .eyebrow::before{content:"";width:46px;height:4px;border-radius:3px;
+    background:linear-gradient(90deg,var(--blue),var(--orange));}
+
+  h1{font-family:'Plus Jakarta Sans';font-weight:800;color:var(--ink);
+     line-height:1.04;letter-spacing:-1px;}
+  .lead{font-size:30px;line-height:1.5;color:var(--slate);font-weight:400;}
+
+  .stepnum{font-family:'Plus Jakarta Sans';font-weight:800;
+    font-size:120px;line-height:1;
+    -webkit-text-stroke:3px var(--blue);color:transparent;opacity:.18;}
+
+  .footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+    padding-top:34px;border-top:1px solid var(--line);}
+  .footer .handle{font-family:'Plus Jakarta Sans';font-weight:700;font-size:22px;color:var(--ink);}
+  .footer .swipe{display:flex;align-items:center;gap:12px;font-weight:600;
+    font-size:22px;color:var(--blue);}
+  .footer .swipe .arrow{font-size:30px;line-height:1;}
+
+  /* =========================================================
+     SLIDE 1 — COVER
+  ========================================================= */
+  .cover{background:
+      linear-gradient(160deg,#0a2a66 0%, #0b54c9 52%, #1572d8 100%);}
+  .cover .grain{background:
+      radial-gradient(900px 700px at 110% 0%, rgba(31,155,240,.45), transparent 55%),
+      radial-gradient(700px 700px at -15% 100%, rgba(240,138,22,.22), transparent 55%);}
+  .cover .brandbar img{height:64px;
+     filter:brightness(0) invert(1);}
+  .cover .badge{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);}
+  .cover .badge span{color:#fff;}
+  .cover .eyebrow{color:#bfe0ff;}
+  .cover .eyebrow::before{background:linear-gradient(90deg,#fff,var(--orange));}
+  .cover h1{color:#fff;font-size:88px;margin-top:30px;}
+  .cover h1 .hl{color:#ffd9a8;}
+  .cover .lead{color:#d4e4ff;margin-top:30px;max-width:780px;}
+  .cover .footer{border-top-color:rgba(255,255,255,.22);}
+  .cover .footer .handle{color:#fff;}
+  .cover .footer .swipe{color:#ffd9a8;}
+
+  .pin-hero{position:relative;margin:54px 0 10px;flex:1;display:flex;
+    align-items:center;justify-content:center;}
+  .map-card{width:100%;height:430px;border-radius:34px;position:relative;overflow:hidden;
+    background:
+      linear-gradient(0deg,#dbe7f5,#dbe7f5);
+    box-shadow:0 40px 80px rgba(3,18,46,.45);border:6px solid #fff;}
+  .map-card .roads{position:absolute;inset:0;
+    background:
+      linear-gradient(115deg,transparent 0 46%, #c4d4ea 46% 48%, transparent 48%),
+      linear-gradient(25deg,transparent 0 60%, #cddcef 60% 61.4%, transparent 61.4%),
+      linear-gradient(78deg,transparent 0 30%, #cdddef 30% 31%, transparent 31%),
+      radial-gradient(circle at 20% 80%, #c9f0d2 0 90px, transparent 92px),
+      radial-gradient(circle at 82% 24%, #cfe8f7 0 120px, transparent 122px);}
+  .map-card .street{position:absolute;height:14px;background:#fff;border-radius:8px;
+    box-shadow:0 0 0 1px #c4d4ea;}
+  .s1{top:120px;left:-40px;width:520px;transform:rotate(20deg);}
+  .s2{bottom:90px;left:120px;width:680px;transform:rotate(-12deg);}
+  .s3{top:60px;right:-60px;width:420px;transform:rotate(-40deg);}
+  .pin{position:absolute;left:50%;top:46%;transform:translate(-50%,-100%);
+    width:118px;height:118px;}
+  .pin svg{filter:drop-shadow(0 16px 22px rgba(3,18,46,.4));}
+  .ping{position:absolute;left:50%;top:46%;width:118px;height:60px;
+    transform:translate(-50%,8px);}
+  .ping span{position:absolute;left:50%;top:50%;width:40px;height:40px;border-radius:50%;
+    transform:translate(-50%,-50%);background:rgba(11,84,201,.35);}
+
+  .review-chip{position:absolute;right:34px;bottom:30px;background:#fff;border-radius:18px;
+    padding:16px 20px;box-shadow:0 18px 34px rgba(3,18,46,.28);display:flex;
+    flex-direction:column;gap:6px;min-width:190px;}
+  .review-chip .stars{color:#fbbc05;font-size:26px;letter-spacing:3px;}
+  .review-chip .rtext{font-weight:700;color:var(--ink);font-size:18px;}
+  .review-chip .rsub{font-size:14px;color:var(--slate);}
+
+  /* =========================================================
+     CONTENT SLIDES (2–7) layout
+  ========================================================= */
+  .content h1{font-size:60px;margin-top:18px;}
+  .content .lead{margin-top:24px;max-width:760px;}
+
+  .head-row{display:flex;align-items:flex-start;justify-content:space-between;
+    margin-top:40px;}
+  .iconwrap{width:128px;height:128px;border-radius:30px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,var(--blue),var(--sky));
+    box-shadow:0 22px 40px rgba(11,84,201,.32);}
+  .iconwrap.orange{background:linear-gradient(150deg,#f0a516,var(--orange));
+    box-shadow:0 22px 40px rgba(240,138,22,.34);}
+  .iconwrap svg{width:64px;height:64px;}
+
+  /* mock surface area */
+  .stage{flex:1;display:flex;align-items:center;justify-content:center;
+    margin:46px 0 30px;}
+  .surface{width:100%;background:#fff;border-radius:30px;border:1px solid var(--line);
+    box-shadow:0 30px 60px rgba(16,42,82,.12);overflow:hidden;}
+
+  /* google search mock (slide 2) */
+  .gsearch{padding:42px 44px;}
+  .searchbar{display:flex;align-items:center;gap:18px;border:1px solid var(--line);
+    border-radius:999px;padding:22px 30px;box-shadow:0 6px 16px rgba(16,42,82,.06);}
+  .searchbar .q{font-size:30px;color:var(--ink);font-weight:500;flex:1;}
+  .searchbar .gico{font-family:'Plus Jakarta Sans';font-weight:800;font-size:30px;}
+  .result{display:flex;gap:22px;margin-top:36px;padding:26px;border-radius:20px;
+    background:#f6f9ff;border:1px solid var(--line);}
+  .result .thumb{width:120px;height:120px;border-radius:18px;flex:none;
+    background:linear-gradient(150deg,var(--blue),var(--sky));display:flex;
+    align-items:center;justify-content:center;color:#fff;font-family:'Plus Jakarta Sans';
+    font-weight:800;font-size:46px;}
+  .result .meta{flex:1;}
+  .result .biz{font-family:'Plus Jakarta Sans';font-weight:700;font-size:32px;color:var(--ink);}
+  .result .rate{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:24px;color:var(--slate);}
+  .result .rate b{color:var(--ink);}
+  .result .rate .stars{color:#fbbc05;letter-spacing:2px;}
+  .result .tags{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .result .tags span{background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:8px 16px;font-size:18px;color:var(--slate);font-weight:600;}
+  .top-badge{display:inline-flex;align-items:center;gap:8px;background:#e7f0ff;
+    color:var(--blue);font-weight:700;font-size:18px;border-radius:999px;
+    padding:8px 16px;margin-bottom:14px;}
+
+  /* maps mock (slide 3) */
+  .gmap{height:560px;position:relative;background:#dde8f6;}
+  .gmap .park{position:absolute;width:280px;height:230px;background:#cdeccf;border-radius:30px;
+    left:90px;bottom:80px;}
+  .gmap .water{position:absolute;width:320px;height:300px;background:#bfe0f5;border-radius:40px;
+    right:-60px;top:-40px;}
+  .gmap .rd{position:absolute;background:#fff;border-radius:10px;box-shadow:0 0 0 1px #cfe;}
+  .gmap .rd1{height:18px;width:900px;top:200px;left:-30px;transform:rotate(8deg);}
+  .gmap .rd2{width:20px;height:700px;left:540px;top:-60px;transform:rotate(10deg);}
+  .gmap .rd3{height:16px;width:760px;bottom:160px;left:60px;transform:rotate(-9deg);}
+  .gmap .mpin{position:absolute;left:520px;top:210px;transform:translate(-50%,-100%);width:96px;}
+  .gmap .mpin svg{filter:drop-shadow(0 14px 18px rgba(3,18,46,.35));}
+  .gmap .dircard{position:absolute;left:40px;top:36px;background:#fff;border-radius:20px;
+    padding:24px 28px;box-shadow:0 18px 40px rgba(16,42,82,.18);width:430px;}
+  .gmap .dircard .name{font-family:'Plus Jakarta Sans';font-weight:700;font-size:30px;color:var(--ink);}
+  .gmap .dircard .row{display:flex;align-items:center;gap:14px;margin-top:16px;font-size:22px;color:var(--slate);}
+  .gmap .dircard .row .dot{width:40px;height:40px;border-radius:50%;background:#eef3fb;
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .gmap .gobtn{position:absolute;right:36px;bottom:36px;background:var(--blue);color:#fff;
+    border-radius:999px;padding:18px 32px;font-weight:700;font-size:24px;display:flex;gap:12px;
+    align-items:center;box-shadow:0 16px 30px rgba(11,84,201,.4);}
+
+  /* trust mock (slide 4) */
+  .trust{padding:46px;display:flex;flex-direction:column;gap:24px;}
+  .verified{display:flex;align-items:center;gap:18px;}
+  .verified .vname{font-family:'Plus Jakarta Sans';font-weight:700;font-size:34px;color:var(--ink);}
+  .verified .vcheck{width:44px;height:44px;border-radius:50%;background:#1f9bf0;display:flex;
+    align-items:center;justify-content:center;}
+  .photostrip{display:flex;gap:16px;}
+  .photostrip div{flex:1;height:150px;border-radius:18px;}
+  .ph1{background:linear-gradient(150deg,#0b54c9,#1f9bf0);}
+  .ph2{background:linear-gradient(150deg,#f0a516,#f08a16);}
+  .ph3{background:linear-gradient(150deg,#1f9bf0,#67c1ff);}
+  .ph4{background:linear-gradient(150deg,#073a8f,#0b54c9);}
+  .reviewrow{display:flex;align-items:center;justify-content:space-between;
+    padding:24px 28px;background:#f6f9ff;border:1px solid var(--line);border-radius:20px;}
+  .reviewrow .left{display:flex;align-items:center;gap:18px;}
+  .reviewrow .av{width:62px;height:62px;border-radius:50%;color:#fff;display:flex;
+    align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';font-weight:800;font-size:28px;}
+  .reviewrow .nm{font-weight:700;font-size:24px;color:var(--ink);}
+  .reviewrow .st{color:#fbbc05;font-size:22px;letter-spacing:2px;}
+  .reviewrow .big{font-family:'Plus Jakarta Sans';font-weight:800;font-size:50px;color:var(--ink);}
+  .reviewrow .big small{font-size:24px;color:var(--slate);font-weight:600;}
+
+  /* contact mock (slide 5) */
+  .actions{padding:50px 46px;display:flex;flex-direction:column;gap:26px;}
+  .actbtn{display:flex;align-items:center;gap:22px;padding:28px 32px;border-radius:22px;
+    border:1px solid var(--line);font-size:30px;font-weight:600;color:var(--ink);background:#fff;}
+  .actbtn .ic{width:64px;height:64px;border-radius:16px;flex:none;display:flex;
+    align-items:center;justify-content:center;}
+  .actbtn.call .ic{background:#e7f7ec;} .actbtn.msg .ic{background:#e7f0ff;}
+  .actbtn.dir .ic{background:#fff1e0;}
+  .actbtn .tap{margin-left:auto;font-size:20px;font-weight:700;color:#fff;
+    background:var(--blue);border-radius:999px;padding:12px 22px;}
+  .actbtn.call .tap{background:#34A853;}
+  .actbtn.dir .tap{background:var(--orange);}
+  .oneclick{display:inline-flex;align-items:center;gap:10px;align-self:center;
+    margin-top:6px;color:var(--slate);font-size:22px;font-weight:600;}
+
+  /* services mock (slide 6) */
+  .svc{padding:46px;display:flex;flex-direction:column;gap:20px;}
+  .svc .hours{display:flex;align-items:center;gap:14px;background:#e7f7ec;color:#1a7a3d;
+    border-radius:14px;padding:16px 22px;font-weight:700;font-size:24px;}
+  .svc .hours .live{width:14px;height:14px;border-radius:50%;background:#34A853;}
+  .svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .svc-grid .item{display:flex;align-items:center;gap:18px;padding:24px;border-radius:18px;
+    background:#f6f9ff;border:1px solid var(--line);}
+  .svc-grid .item .d{width:54px;height:54px;border-radius:14px;flex:none;display:flex;
+    align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);}
+  .svc-grid .item .t{font-weight:700;font-size:24px;color:var(--ink);}
+  .svc-grid .item .p{font-size:18px;color:var(--slate);}
+  .offer{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,#fff1e0,#ffe6c7);
+    border:1px solid #ffd9a8;border-radius:18px;padding:22px 26px;color:#9a5a06;font-weight:700;font-size:24px;}
+
+  /* reviews mock (slide 7) */
+  .revs{padding:46px;display:flex;flex-direction:column;gap:22px;}
+  .scorebar{display:flex;align-items:center;gap:26px;}
+  .scorebar .num{font-family:'Plus Jakarta Sans';font-weight:800;font-size:90px;color:var(--ink);line-height:1;}
+  .scorebar .col .stars{color:#fbbc05;font-size:34px;letter-spacing:3px;}
+  .scorebar .col .cnt{font-size:22px;color:var(--slate);margin-top:6px;}
+  .bars{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .bars .b{display:flex;align-items:center;gap:12px;}
+  .bars .b span{font-size:18px;color:var(--slate);width:18px;}
+  .bars .b .track{flex:1;height:12px;background:#eef3fb;border-radius:8px;overflow:hidden;}
+  .bars .b .fill{height:100%;background:#fbbc05;border-radius:8px;}
+  .revcard{display:flex;gap:18px;padding:24px;background:#f6f9ff;border:1px solid var(--line);border-radius:20px;}
+  .revcard .av{width:60px;height:60px;border-radius:50%;flex:none;color:#fff;display:flex;
+    align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';font-weight:800;font-size:26px;}
+  .revcard .nm{font-weight:700;font-size:24px;color:var(--ink);}
+  .revcard .st{color:#fbbc05;font-size:18px;letter-spacing:1px;}
+  .revcard .tx{font-size:21px;color:var(--slate);line-height:1.45;margin-top:6px;}
+
+  /* =========================================================
+     SLIDE 8 — CTA
+  ========================================================= */
+  .cta{background:linear-gradient(160deg,#0a2a66 0%, #0b54c9 55%, #1572d8 100%);}
+  .cta .grain{background:
+      radial-gradient(800px 700px at 110% 100%, rgba(240,138,22,.28), transparent 55%),
+      radial-gradient(800px 700px at -10% 0%, rgba(31,155,240,.4), transparent 55%);}
+  .cta .brandbar img{height:64px;filter:brightness(0) invert(1);}
+  .cta .badge{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);}
+  .cta .badge span{color:#fff;}
+  .cta .eyebrow{color:#bfe0ff;}
+  .cta .eyebrow::before{background:linear-gradient(90deg,#fff,var(--orange));}
+  .cta h1{color:#fff;font-size:74px;margin-top:26px;}
+  .cta h1 .hl{color:#ffd9a8;}
+  .cta .svc-list{margin-top:46px;display:flex;flex-direction:column;gap:18px;}
+  .cta .svc-list .li{display:flex;align-items:center;gap:22px;background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:24px 30px;}
+  .cta .svc-list .li .ck{width:52px;height:52px;border-radius:14px;flex:none;display:flex;
+    align-items:center;justify-content:center;background:#fff;}
+  .cta .svc-list .li .tx{color:#fff;font-family:'Plus Jakarta Sans';font-weight:700;font-size:32px;}
+  .contact{margin-top:auto;display:flex;flex-direction:column;gap:16px;}
+  .contact .row{display:flex;align-items:center;gap:18px;color:#eaf2ff;font-size:30px;font-weight:600;}
+  .contact .row .ic{width:58px;height:58px;border-radius:14px;background:rgba(255,255,255,.14);
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .cta .kicker{margin-top:30px;text-align:center;color:#cfe1ff;font-size:26px;font-weight:600;
+    border-top:1px solid rgba(255,255,255,.2);padding-top:28px;}
+  .cta .kicker b{color:#fff;}
+
+</style>
+</head>
+<body>
+
+<!-- ================= SLIDE 1 — COVER ================= -->
+<section class="slide cover">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_transparent.png" alt="SESO Digital">
+      <div class="badge">
+        <div class="gdots">
+          <i style="background:var(--g-blue)"></i><i style="background:var(--g-red)"></i>
+          <i style="background:var(--g-yellow)"></i><i style="background:var(--g-green)"></i>
+        </div>
+        <span>Google Business</span>
+      </div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:54px;">Local Growth Guide</div>
+    <h1>Why a Google<br>Business Profile<br><span class="hl">matters</span> for you</h1>
+    <p class="lead">Show up when nearby customers search — and turn searches into calls, visits and sales.</p>
+
+    <div class="pin-hero">
+      <div class="map-card">
+        <div class="roads"></div>
+        <div class="street s1"></div><div class="street s2"></div><div class="street s3"></div>
+        <div class="ping"><span></span></div>
+        <div class="pin">
+          <svg viewBox="0 0 100 100"><path d="M50 4C29 4 12 21 12 42c0 27 38 54 38 54s38-27 38-54C88 21 71 4 50 4z" fill="#0b54c9"/><circle cx="50" cy="40" r="15" fill="#fff"/></svg>
+        </div>
+        <div class="review-chip">
+          <div class="stars">★★★★★</div>
+          <div class="rtext">4.9 · 240 reviews</div>
+          <div class="rsub">Open now · Near you</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Swipe to grow <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2 — SEARCH ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">01</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Get Found</div>
+        <h1>Show up on<br>Google Search</h1>
+      </div>
+      <div class="iconwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+    </div>
+    <p class="lead">When people search for your services, your business appears right where they’re looking.</p>
+
+    <div class="stage">
+      <div class="surface gsearch">
+        <div class="searchbar">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5a6b85" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
+          <span class="q">best marketing agency near me</span>
+          <span class="gico"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>
+        </div>
+        <div class="result">
+          <div class="thumb">S</div>
+          <div class="meta">
+            <div class="top-badge">◆ Sponsored · Top result</div>
+            <div class="biz">SESO Digital — Marketing Agency</div>
+            <div class="rate"><span class="stars">★★★★★</span> <b>4.9</b> · 240 Google reviews</div>
+            <div class="tags"><span>Open now</span><span>2.1 km away</span><span>On-site services</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Next <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 3 — MAPS ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">02</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Be Visible</div>
+        <h1>Appear on<br>Google Maps</h1>
+      </div>
+      <div class="iconwrap orange">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-7.6-7-12a7 7 0 0114 0c0 4.4-7 12-7 12z"/><circle cx="12" cy="9" r="2.6"/></svg>
+      </div>
+    </div>
+    <p class="lead">Help nearby customers find your location, get directions and contact you in seconds.</p>
+
+    <div class="stage">
+      <div class="surface">
+        <div class="gmap">
+          <div class="water"></div><div class="park"></div>
+          <div class="rd rd1"></div><div class="rd rd2"></div><div class="rd rd3"></div>
+          <div class="dircard">
+            <div class="name">SESO Digital</div>
+            <div class="row"><span class="dot">📍</span> 12 min · 2.1 km away</div>
+            <div class="row"><span class="dot">🕒</span> Open now · Closes 7 PM</div>
+          </div>
+          <div class="mpin">
+            <svg viewBox="0 0 100 100"><path d="M50 4C29 4 12 21 12 42c0 27 38 54 38 54s38-27 38-54C88 21 71 4 50 4z" fill="#f08a16"/><circle cx="50" cy="40" r="15" fill="#fff"/></svg>
+          </div>
+          <div class="gobtn">▸ Directions</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Next <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 4 — TRUST ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">03</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Earn Confidence</div>
+        <h1>Build trust &<br>credibility</h1>
+      </div>
+      <div class="iconwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.4 8.3-7 10-3.6-1.7-7-5-7-10V6z"/><path d="M9 12l2.2 2.2L15.5 10" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <p class="lead">A complete profile — reviews, photos and accurate info — makes customers choose you with confidence.</p>
+
+    <div class="stage">
+      <div class="surface trust">
+        <div class="verified">
+          <span class="vname">SESO Digital</span>
+          <span class="vcheck"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+          <span style="color:var(--slate);font-size:22px;font-weight:600;">Verified business</span>
+        </div>
+        <div class="photostrip"><div class="ph1"></div><div class="ph2"></div><div class="ph3"></div><div class="ph4"></div></div>
+        <div class="reviewrow">
+          <div class="left">
+            <div class="av" style="background:#0b54c9">A</div>
+            <div><div class="nm">Aarav S.</div><div class="st">★★★★★</div></div>
+          </div>
+          <div style="font-size:22px;color:var(--slate);max-width:330px;text-align:right;">“Genuine team, real results.”</div>
+        </div>
+        <div class="reviewrow">
+          <div class="big">4.9<small> / 5 average rating</small></div>
+          <div style="color:var(--slate);font-size:22px;font-weight:600;">from 240 verified reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Next <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 5 — CONTACT ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">04</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Stay Reachable</div>
+        <h1>Get more calls<br>& messages</h1>
+      </div>
+      <div class="iconwrap orange">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>
+      </div>
+    </div>
+    <p class="lead">Customers reach you straight from your profile — one tap to call, message or get directions.</p>
+
+    <div class="stage">
+      <div class="surface actions">
+        <div class="actbtn call">
+          <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg></div>
+          Call now <span class="tap">Tap</span>
+        </div>
+        <div class="actbtn msg">
+          <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0b54c9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg></div>
+          Message <span class="tap">Tap</span>
+        </div>
+        <div class="actbtn dir">
+          <div class="ic"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#f08a16" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-7.6-7-12a7 7 0 0114 0c0 4.4-7 12-7 12z"/><circle cx="12" cy="9" r="2.6"/></svg></div>
+          Directions <span class="tap">Tap</span>
+        </div>
+        <div class="oneclick">⚡ One click — no website needed</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Next <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 6 — SERVICES ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">05</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Show It All</div>
+        <h1>Showcase your<br>services</h1>
+      </div>
+      <div class="iconwrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>
+      </div>
+    </div>
+    <p class="lead">List your products, offers, hours and updates so customers know exactly what you do.</p>
+
+    <div class="stage">
+      <div class="surface svc">
+        <div class="hours"><span class="live"></span> Open now · Mon–Sat, 9 AM – 7 PM</div>
+        <div class="svc-grid">
+          <div class="item"><div class="d">🔍</div><div><div class="t">Local SEO</div><div class="p">Rank in your area</div></div></div>
+          <div class="item"><div class="d">📍</div><div><div class="t">Maps Optimization</div><div class="p">Get found nearby</div></div></div>
+          <div class="item"><div class="d">📱</div><div><div class="t">Social Media</div><div class="p">Grow your audience</div></div></div>
+          <div class="item"><div class="d">⭐</div><div><div class="t">Review Management</div><div class="p">Build reputation</div></div></div>
+        </div>
+        <div class="offer">🎁 Limited offer — Free profile audit this month</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Next <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 7 — REVIEWS ================= -->
+<section class="slide content">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_trimmed.png" alt="SESO Digital">
+      <div class="stepnum">06</div>
+    </div>
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">Win Reputation</div>
+        <h1>Collect customer<br>reviews</h1>
+      </div>
+      <div class="iconwrap orange">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>
+      </div>
+    </div>
+    <p class="lead">Positive reviews lift your reputation and bring new customers through the door every week.</p>
+
+    <div class="stage">
+      <div class="surface revs">
+        <div class="scorebar">
+          <div class="num">4.9</div>
+          <div class="col"><div class="stars">★★★★★</div><div class="cnt">240 reviews</div></div>
+          <div class="bars">
+            <div class="b"><span>5</span><div class="track"><div class="fill" style="width:94%"></div></div></div>
+            <div class="b"><span>4</span><div class="track"><div class="fill" style="width:60%"></div></div></div>
+            <div class="b"><span>3</span><div class="track"><div class="fill" style="width:14%"></div></div></div>
+            <div class="b"><span>2</span><div class="track"><div class="fill" style="width:5%"></div></div></div>
+          </div>
+        </div>
+        <div class="revcard">
+          <div class="av" style="background:#0b54c9">P</div>
+          <div><div class="nm">Priya M.</div><div class="st">★★★★★</div>
+            <div class="tx">“Booked through their Google profile in minutes. Quick, professional and exactly what we needed.”</div></div>
+        </div>
+        <div class="revcard">
+          <div class="av" style="background:#f08a16">R</div>
+          <div><div class="nm">Rohan K.</div><div class="st">★★★★★</div>
+            <div class="tx">“Found them on Maps, called right away. Best decision for our local store.”</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="handle">@sesodigital</div>
+      <div class="swipe">Last one <span class="arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 8 — CTA ================= -->
+<section class="slide cta">
+  <div class="grain"></div>
+  <div class="pad">
+    <div class="brandbar">
+      <img src="assets/logo_transparent.png" alt="SESO Digital">
+      <div class="badge">
+        <div class="gdots">
+          <i style="background:var(--g-blue)"></i><i style="background:var(--g-red)"></i>
+          <i style="background:var(--g-yellow)"></i><i style="background:var(--g-green)"></i>
+        </div>
+        <span>Let’s grow</span>
+      </div>
+    </div>
+
+    <div class="eyebrow" style="margin-top:48px;">Ready to start?</div>
+    <h1>Need a Google<br>Business <span class="hl">Profile?</span></h1>
+
+    <div class="svc-list">
+      <div class="li"><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b54c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><div class="tx">Google Business Profile setup</div></div>
+      <div class="li"><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b54c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><div class="tx">Google Maps optimization</div></div>
+      <div class="li"><div class="ck"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0b54c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></div><div class="tx">Local SEO services</div></div>
+    </div>
+
+    <div class="contact">
+      <div class="row"><span class="ic">💬</span> WhatsApp: 76220 41811</div>
+      <div class="row"><span class="ic">✉️</span> sesodigitalmarketing@gmail.com</div>
+    </div>
+
+    <div class="kicker">Grow your business with <b>Google Business Profile</b> today.</div>
+  </div>
+</section>
+
+</body>
+</html>
